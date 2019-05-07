@@ -79,6 +79,38 @@ if __name__ == "__main__":
                     shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
                      accountcode, mail_id, ip_id, card_id, label, creationdate])# add the interested features here
 
+    # feat_list = list(issuercountry_set)
+    # feat_list.extend(list(txvariantcode_set))
+    # feat_list.extend(list(currencycode_set))
+    # feat_list.extend(list(shoppercountry_set))
+    # print(feat_list)
+    # feat_heat_map = np.zeros((len(feat_list), len(feat_list)))
+    # for [issuercountry, txvariantcode, issuer_id, amount, currencycode,
+    #                 shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
+    #                  accountcode, mail_id, ip_id, card_id, label, creationdate] in data:
+    #     if label == 1:
+    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(txvariantcode)] + 1
+    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(issuercountry)] + 1
+    #
+    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(currencycode)] + 1
+    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(issuercountry)] + 1
+    #
+    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(shoppercountry)] + 1
+    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(issuercountry)] + 1
+    #
+    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(currencycode)] + 1
+    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(txvariantcode)] + 1
+    #
+    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(shoppercountry)] + 1
+    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(txvariantcode)] + 1
+    #
+    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(shoppercountry)] + 1
+    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(currencycode)] + 1
+    #
+    # sns.heatmap(feat_heat_map, xticklabels=feat_list, yticklabels=feat_list)
+    # plt.show()
+    #
+
     print(count)
     par1 = txvariantcode_set
     par2 = currencycode_set
@@ -94,6 +126,7 @@ if __name__ == "__main__":
             i = plist1.index(txvariantcode)
             j = plist2.index(currencycode)
             heat_map[i][j] = heat_map[i][j] + 1
+
 
     print(heat_map.sum())
     sns.heatmap(heat_map, xticklabels=plist2, yticklabels=plist1)

@@ -25,8 +25,9 @@
 import datetime
 import time
 import matplotlib.pyplot as plt
-from sklearn import neighbors
+from sklearn import neighbors, svm
 from sklearn.metrics import precision_recall_curve
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -46,17 +47,13 @@ def aggregate(before_aggregate, aggregate_feature):
         group_unit = []
         mean = []
         for i, item in temp:# i is group id
-            print(i, item)
             for jtem in item:# unit in each group
                 group_unit.append(jtem)
-                print(jtem)
-            #for feature_i in xrange(6):
-            #    mean.append(zip(group_unit)[feature_i])
-            #after_aggregate.append(group_unit)
-            after_aggregate.append(mean)
+            # for feature_i in range(0,len(group_unit)):
+                # mean.append(zip(group_unit)[feature_i])
+            after_aggregate.append(group_unit)
+            # after_aggregate.append(mean)
             group_unit = []
-        print(after_aggregate[0])
-        print(before_aggregate[0])
     if aggregate_feature == 'client':
         after_aggregate = []
         pos_client = -3
@@ -157,7 +154,9 @@ if __name__ == "__main__":
                      accountcode, mail_id, ip_id, card_id, label, creationdate])# add the interested features here
         #y.append(label)# add the labels
     data = sorted(data, key = lambda k: k[-1])
+    # print(data)
     day_aggregate = aggregate(data,'day')
+    # print(day_aggregate)
     client_aggregate = aggregate(data,'client')
     transaction_num_day = []
     for item in day_aggregate:
@@ -165,7 +164,7 @@ if __name__ == "__main__":
     plt.figure(1)
     plt.plot(transaction_num_day, color = 'c', linewidth = 2)
     plt.plot()
-    plt.text(2,0.0,'Date: 2015-10-8')
+    # plt.text(2,0.0,'Date: 2015-10-8')
     plt.xlabel('Date')
     plt.ylabel('Number of Transactions')
     plt.xlim([0,125])
@@ -244,6 +243,7 @@ x_train, x_test, y_train, y_test = train_test_split(usx, usy, test_size = 0.2)#t
 clf = neighbors.KNeighborsClassifier(algorithm = 'kd_tree')
 clf.fit(x_train, y_train)
 y_predict = clf.predict(x_test)
+print(y_predict)
 for i in xrange(len(y_predict)):
     if y_test[i]==1 and y_predict[i]==1:
         TP += 1
@@ -259,7 +259,36 @@ print('FN: '+ str(FN))
 print('TN: '+ str(TN))
 #print confusion_matrix(y_test, answear) watch out the element in confusion matrix
 precision, recall, thresholds = precision_recall_curve(y_test, y_predict)
+print(thresholds)
 predict_proba = clf.predict_proba(x_test)#the probability of each smple labelled to positive or negative
+# print(predict_proba)
+# plt.figure(4)
+# plt.plot(precision, recall)
 
+cls_log = LogisticRegression()
+cls_log.fit(x_train, y_train)
+y_predict_log = cls_log.predict(x_test)
+y_predict_logs = cls_log.predict_proba(x_test)
+print(y_predict_logs)
+
+TP, FP, FN, TN = 0, 0, 0, 0
+for i in xrange(len(y_predict_log)):
+    if y_test[i]==1 and y_predict_log[i]==1:
+        TP += 1
+    if y_test[i]==0 and y_predict_log[i]==1:
+        FP += 1
+    if y_test[i]==1 and y_predict_log[i]==0:
+        FN += 1
+    if y_test[i]==0 and y_predict_log[i]==0:
+        TN += 1
+print('TP: '+ str(TP))
+print('FP: '+ str(FP))
+print('FN: '+ str(FN))
+print('TN: '+ str(TN))
+
+# cls_csv = svm.SVC(probability=True)
+# cls_csv.fit(x_train, y_train)
+# y_predict_csv = cls_csv.predict_proba(x_test)
+# print(y_predict_csv)
 
 plt.show()
