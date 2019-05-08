@@ -1,9 +1,18 @@
 import numpy as np
 import pandas as pd
 import math
+from collections import deque
+from StringIO import StringIO
+
+nr_samples = 5000
+dataset = pd.read_csv('datasets/tsmote0.csv', delimiter=',', nrows=nr_samples, header=None)
+
+with open('datasets/tsmote0.csv', 'r') as f:
+    q = deque(f, nr_samples)
+dataset_bottom = pd.read_csv(StringIO(''.join(q)), header=None)
+dataset = pd.concat([dataset, dataset_bottom])
 
 
-dataset = pd.read_csv('datasets/tsmote0.csv', delimiter=',',nrows=  , header=None)
 Targets = []
 for x in dataset.loc[:, 2].values:
     if x == "Chargeback":
