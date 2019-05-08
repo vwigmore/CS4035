@@ -4,8 +4,13 @@ import math
 from collections import deque
 from StringIO import StringIO
 
+
+names = [i for i in range(0, 295)]
+types = {i: np.int8 for i in range(3, 295)}
+types.update({'0': np.float32, '1': np.float32, '2': np.unicode_})
+
 nr_samples = 5000
-dataset = pd.read_csv('datasets/tsmote0.csv', delimiter=',', nrows=nr_samples, header=None)
+dataset = pd.read_csv('datasets/tsmote0.csv', delimiter=',', nrows=nr_samples, names=names, dtype=types, header=None)
 
 with open('datasets/tsmote0.csv', 'r') as f:
     q = deque(f, nr_samples)
