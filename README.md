@@ -1,6 +1,6 @@
 Steps for executing code with datasets already preprocessed
 --
-1. Create folder 'datasets' with all data sets from dataset.zip and dataset_part2.zip
+1. Create folder 'datasets' with all data sets from datasets_part1.zip, datasets_part2.zip and datasets_part3.zip
 
   `Optionally - Run visualisation.py`
   
