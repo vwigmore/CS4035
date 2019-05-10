@@ -8,6 +8,8 @@ Steps for executing code with .tar.xz
   
   `Optionally - Run blackbox.py`
 
+  'Optionally - Run whitebox.py'
+
 Steps for executing code without .tar.xz
 --
 1. Create empty folder 'datasets'
@@ -20,5 +22,8 @@ Steps for executing code without .tar.xz
   
 3. Run preprocessing.py
 4. Import smote_for_kfold.knwf into knime and save result in dataset folder
+5. Move header.txt into folder datasets
 
   `Optionally - Run blackbox.py`
+
+  'Optionally - Run whitebox.py'

@@ -10,23 +10,23 @@ from StringIO import StringIO
 
 import numpy as np
 
-#The method used to read in the smoted training set.
+# The method used to read in the smoted training set.
 def read_data_smoted(str):
 
-    #The full set is too large to read in (it leads to memory errors)
-    #Therefore the first 25000 lines of the smoted set are read in here.
-    #These are all non fraudelent cases and all the fraudulent non-smoted cases
+    # The full set is too large to read in (it leads to memory errors)
+    # Therefore the first 25000 lines of the smoted set are read in here.
+    # These are all non fraudelent cases and all the fraudulent non-smoted cases
     nr_samples = 25000
     dataset = pd.read_csv(str, delimiter=',',nrows=nr_samples, header=None)
 
-    #Here the last 25000 lines of the smoted set are read in these are all smoted fraudulent cases.
+    # Here the last 25000 lines of the smoted set are read in these are all smoted fraudulent cases.
     with open(str, 'r') as f:
         q = deque(f, nr_samples)
     dataset_bottom = pd.read_csv(StringIO(''.join(q)), header=None)
-    #The two sets are here concatenated.
+    # The two sets are here concatenated.
     dataset = pd.concat([dataset, dataset_bottom])
 
-    #read all the chargebacks and create the test labels
+    # read all the chargebacks and create the test labels
     Targets = []
     for x in dataset.loc[:, 2].values:
        if x == "Chargeback":
@@ -34,13 +34,13 @@ def read_data_smoted(str):
        else:
           Targets.append(0)
 
-    #The labels and other features that should not be used in training are removed.
+    #T he labels and other features that should not be used in training are removed.
     dataset = dataset.drop([dataset.columns[2], dataset.columns[285], dataset.columns[286]], axis=1)
     Inputs = dataset.values
     dataset = None
     return Inputs, Targets
 
-#The method used to read in the test set.
+# The method used to read in the test set.
 def read_data_test(str):
 
     dataset = pd.read_csv(str, delimiter=',', header=None)
@@ -51,7 +51,7 @@ def read_data_test(str):
         else:
             Targets.append(0)
 
-    #all unusable features are removed here
+    # all unusable features are removed here
     dataset = dataset.drop([dataset.columns[4], dataset.columns[0], dataset.columns[3], dataset.columns[5],
                             dataset.columns[7], dataset.columns[8], dataset.columns[9], dataset.columns[10],
                             dataset.columns[285], dataset.columns[286]], axis=1)
@@ -59,7 +59,7 @@ def read_data_test(str):
     dataset = None
     return Inputs, Targets
 
-#The method used to calculate the number of True positives, True negatives, False positives and False negatives.
+# The method used to calculate the number of True positives, True negatives, False positives and False negatives.
 def calc_eff(y_predict, y_test):
     TP, FP, FN, TN = 0, 0, 0, 0
     for i in xrange(len(y_predict)):
@@ -76,7 +76,7 @@ def calc_eff(y_predict, y_test):
     print('FN: ' + str(FN))
     print('TN: ' + str(TN))
 
-#This method creates a dictionary that maps the column numbers to the features stored on those columns.
+# This method creates a dictionary that maps the column numbers to the features stored on those columns.
 def dictionary():
     header = {}
 
@@ -89,7 +89,7 @@ def dictionary():
     header[291] = 'SwedenAccount_accountcode'
     return header
 
-#Sub method of visualisation that is called to visualise the trees used in the random forest
+# Sub method of visualisation that is called to visualise the trees used in the random forest
 def visualize_tree(Tree, index):
     n_nodes = Tree.tree_.node_count
     children_left = Tree.tree_.children_left
@@ -113,7 +113,6 @@ def visualize_tree(Tree, index):
         else:
             is_leaves[node_id] = True
 
-
     print("This is tree number: %s in the forest, the tree has %s nodes and has "
           "the following tree structure:"
           % (index, n_nodes))
@@ -132,8 +131,9 @@ def visualize_tree(Tree, index):
                      ))
     print
 
-#Sub method of visualisation that is used to visualise the decision path the transaction makes through the different
-#in the random forest.
+
+# Sub method of visualisation that is used to visualise the decision path the transaction makes through the different
+# in the random forest.
 def visualize_decision_path(Tree, transaction, simplified, Tree_n):
 
     feature = Tree.tree_.feature
@@ -152,8 +152,8 @@ def visualize_decision_path(Tree, transaction, simplified, Tree_n):
     valueset = []
     nodeset = []
 
-    #This prints out the decision path using columns and thresholds of each node in the tree.
-    #only called if the visualisation is not simplified.
+    # This prints out the decision path using columns and thresholds of each node in the tree.
+    # only called if the visualisation is not simplified.
     if not simplified:
 
        print('Rules used to predict sample %s in tree number %s of the random forest: ' % (sample_id, Tree_n))
@@ -176,13 +176,13 @@ def visualize_decision_path(Tree, transaction, simplified, Tree_n):
                     threshold[node_id]))
        print
 
-    #code used to visualise the decision path each column is matched to the feature on the column.
-    #To show what features where used in what order by the tree to determine if the transaction is fraudulent.
+    # code used to visualise the decision path each column is matched to the feature on the column.
+    # To show what features where used in what order by the tree to determine if the transaction is fraudulent.
     for node_id in node_index:
         if leave_id[sample_id] == node_id:
             continue
 
-        if (transaction[sample_id, feature[node_id]] <= threshold[node_id]):
+        if transaction[sample_id, feature[node_id]] <= threshold[node_id]:
             threshold_sign = "<="
         else:
             threshold_sign = ">"
@@ -211,9 +211,10 @@ def visualize_decision_path(Tree, transaction, simplified, Tree_n):
         print(string)
     print
 
-#The main method used to visualise how a transaction is labeled as fraudulent by the random forest.
-#Simplified is a boolean if it is true only the decision path of the transaction through the trees is revealed.
-#If Simplified is false each tree structure is visualised as well as the decision path of the transaction through the tree.
+
+# The main method used to visualise how a transaction is labeled as fraudulent by the random forest.
+# Simplified is a boolean if it is true only the decision path of the transaction through the trees is revealed.
+# If Simplified is false each tree structure is visualised as well as the decision path of the transaction through the tree.
 def visualize_decision(rf, transaction, actual_result, simplified):
     trees = rf.estimators_
     The_trees = []
@@ -223,7 +224,7 @@ def visualize_decision(rf, transaction, actual_result, simplified):
     else:
         print("the transaction was not fraudulent")
 
-    #only trees that predict that transaction to be fraudulent are visualised.
+    # only trees that predict that transaction to be fraudulent are visualised.
     for j, tree in enumerate(trees):
         y_predict = tree.predict(transaction)
         if y_predict[0] == 1:
@@ -232,11 +233,12 @@ def visualize_decision(rf, transaction, actual_result, simplified):
     print("the amount of trees that decided the transaction was fraudulent is %s out of %s" %(len(The_trees), len(trees)))
     print('')
 
-    #calls the submethods that print out the tree structure as well as how
+    # calls the submethods that print out the tree structure as well as how
     for x in The_trees:
         if not simplified:
             visualize_tree(x[0], x[1])
         visualize_decision_path(x[0], transaction, simplified, x[1])
+
 
 if __name__ == "__main__":
 
@@ -244,12 +246,11 @@ if __name__ == "__main__":
     y_prob_tot = []
     y_pred_tot = []
     y_actual_tot = []
-    #Decision Threshold used.
+    # Decision Threshold used.
     Thr = 0.7
 
-
     for i in range(0, 10):
-        #read in the data set.
+        # read in the data set.
         test_x, test_y = read_data_test('datasets/test' + str(i) + '.csv')
         train_x, train_y = read_data_smoted('datasets/tsmote' + str(i) + '.csv')
         print("files loaded in iteration number: " + str(i))
@@ -265,18 +266,18 @@ if __name__ == "__main__":
         y_actual_tot.extend(test_y)
         y_prob_tot.extend(y_pred_prob)
 
-        #takes one case that is determined to be fraudulent and visualises the random forests decision making.
+        # takes one case that is determined to be fraudulent and visualises the random forests decision making.
         if i == 1:
             for x, y in enumerate(y_predict):
                 if y == 1:
                     visualize_decision(clf, np.array([test_x[i]]), test_y[i], True)
                     break
 
-    #takes the Threshold to determine if a case is fraudluent.
+    # takes the Threshold to determine if a case is fraudluent.
     y_pred_tot2 = list(map(lambda x: 1 if x > Thr else 0, y_prob_tot))
     calc_eff(y_pred_tot2, y_actual_tot)
 
-    #Roc curve of the data used.
+    # Roc curve of the data used.
     fpr, tpr, thresholds = metrics.roc_curve(y_actual_tot, y_prob_tot)
 
     plt.figure(3)
