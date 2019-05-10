@@ -1,6 +1,6 @@
-Steps for executing code with .tar.xz
+Steps for executing code with datasets already preprocessed
 --
-1. Create folder 'datasets' with all data sets from .tar.xz file
+1. Create folder 'datasets' with all data sets from dataset.zip and dataset_part2.zip
 
   `Optionally - Run visualisation.py`
   
@@ -10,7 +10,7 @@ Steps for executing code with .tar.xz
 
   `Optionally - Run whitebox.py`
 
-Steps for executing code without .tar.xz
+Steps for executing code without preprocessed datasets
 --
 1. Create empty folder 'datasets'
 
@@ -20,7 +20,7 @@ Steps for executing code without .tar.xz
 
   `Optionally - Run smote_analysis.py`
   
-3. Run preprocessing.py
+3. Run preprocessing.py	
 4. Import smote_for_kfold.knwf into knime and save result in dataset folder
 5. Move header.txt into folder datasets
 
