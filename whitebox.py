@@ -230,6 +230,7 @@ if __name__ == "__main__":
     y_prob_tot = []
     y_pred_tot = []
     y_actual_tot = []
+    Thr = 0.7
 
 
     for i in range(0, 10):
@@ -248,7 +249,14 @@ if __name__ == "__main__":
         y_actual_tot.extend(test_y)
         y_prob_tot.extend(y_pred_prob)
 
-    calc_eff(y_pred_tot, y_actual_tot)
+        if i == 1:
+            for x, y in enumerate(y_predict):
+                if y == 1:
+                    visualize_decision(clf, np.array([test_x[i]]), test_y[i], True)
+                    break
+
+    y_pred_tot2 = list(map(lambda x: 1 if x > Thr else 0, y_prob_tot))
+    calc_eff(y_pred_tot2, y_actual_tot)
 
     #print(y_pred_prob)
     fpr, tpr, thresholds = metrics.roc_curve(y_actual_tot, y_prob_tot)
@@ -260,14 +268,5 @@ if __name__ == "__main__":
     plt.legend()
 
     plt.show()
-
-    header = {}
-
-    #take a transaction that is predicted as fraudulent and visualize it.
-    for i, y in enumerate(y_predict):
-        print(i)
-        if y == 1:
-            #visualize_decision(clf, np.array([test_x[i]]), test_y[i], False)
-            break
 
 
