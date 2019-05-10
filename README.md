@@ -8,7 +8,7 @@ Steps for executing code with .tar.xz
   
   `Optionally - Run blackbox.py`
 
-Steps for executing code without .tar.cz
+Steps for executing code without .tar.xz
 --
 1. Create empty folder 'datasets'
 
