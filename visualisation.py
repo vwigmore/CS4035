@@ -99,6 +99,7 @@ if __name__ == "__main__":
     dictionary = {}
     maxelements = 0
 
+    #create a dictionary where card id is the key and the values are amount, label and currency code used
     for [issuercountry, txvariantcode, issuer_id, amount, currencycode,
          shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
          accountcode, mail_id, ip_id, card_id, label, creationdate] in data2:
@@ -140,6 +141,7 @@ if __name__ == "__main__":
         if len(list) < 2:
             continue
 
+        #converts the amounts into euros.
         conversion_dict = {'SEK': 0.09703, 'MXN': 0.04358, 'AUD': 0.63161, 'NZD': 0.58377, 'GBP': 1.13355}
         total = 0
         for x in list:
@@ -148,6 +150,7 @@ if __name__ == "__main__":
             total += total + x[0] * Rate
 
         for x in list:
+            #if the transaction is fraudulent ad its avg and amount to xbad and ybad respectively
             if x[2] is 1:
 
                 Rate = conversion_dict[x[1]]
@@ -158,11 +161,14 @@ if __name__ == "__main__":
                 Ybad.append((x[0] * Rate) / 100)
                 count += 1
             else:
+                #if the transaction is not fraudulent add its avg and amount to xgood and ygood respectively
                 Rate = conversion_dict[x[1]]
 
                 avg = (total - x[0] * Rate) / 100
                 avg = avg / (el - 1)
 
+                #Some averages are so high compared to the rest that the scatterplot becomes unreadable therefore
+                #these points are not visualised. (this is only the case for certain non fraudulent cases)
                 if avg < 15000:
                     Xgood.append(avg)
                     Ygood.append((x[0] * Rate) / 100)
