@@ -4,18 +4,14 @@ import datetime
 import time
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn import neighbors
-from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
 from operator import itemgetter
-from itertools import groupby
 import numpy as np
+
 
 def string_to_timestamp(date_string):#convert time string to float value
     time_stamp = time.strptime(date_string, '%Y-%m-%d %H:%M:%S')
     return time.mktime(time_stamp)
+
 
 if __name__ == "__main__":
 
@@ -31,7 +27,6 @@ if __name__ == "__main__":
     (issuercountry_dict, txvariantcode_dict, currencycode_dict, shoppercountry_dict, interaction_dict,
      verification_dict, accountcode_dict, mail_id_dict, ip_id_dict, card_id_dict) = [{} for _ in xrange(10)]
     # label_set
-    # cvcresponse_set = set()
     ah.readline()  # skip first line
     count = 0
     for line_ah in ah:
@@ -79,39 +74,7 @@ if __name__ == "__main__":
                     shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
                      accountcode, mail_id, ip_id, card_id, label, creationdate])# add the interested features here
 
-    # feat_list = list(issuercountry_set)
-    # feat_list.extend(list(txvariantcode_set))
-    # feat_list.extend(list(currencycode_set))
-    # feat_list.extend(list(shoppercountry_set))
-    # print(feat_list)
-    # feat_heat_map = np.zeros((len(feat_list), len(feat_list)))
-    # for [issuercountry, txvariantcode, issuer_id, amount, currencycode,
-    #                 shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
-    #                  accountcode, mail_id, ip_id, card_id, label, creationdate] in data:
-    #     if label == 1:
-    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(txvariantcode)] + 1
-    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(issuercountry)] + 1
-    #
-    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(currencycode)] + 1
-    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(issuercountry)] + 1
-    #
-    #         feat_heat_map[feat_list.index(issuercountry)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(issuercountry)][feat_list.index(shoppercountry)] + 1
-    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(issuercountry)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(issuercountry)] + 1
-    #
-    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(currencycode)] + 1
-    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(txvariantcode)] + 1
-    #
-    #         feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(txvariantcode)][feat_list.index(shoppercountry)] + 1
-    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(txvariantcode)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(txvariantcode)] + 1
-    #
-    #         feat_heat_map[feat_list.index(currencycode)][feat_list.index(shoppercountry)] = feat_heat_map[feat_list.index(currencycode)][feat_list.index(shoppercountry)] + 1
-    #         feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(currencycode)] = feat_heat_map[feat_list.index(shoppercountry)][feat_list.index(currencycode)] + 1
-    #
-    # sns.heatmap(feat_heat_map, xticklabels=feat_list, yticklabels=feat_list)
-    # plt.show()
-    #
-
-    print(count)
+    # Create a HeatMap of the number of fraud cases
     par1 = txvariantcode_set
     par2 = currencycode_set
 
@@ -119,6 +82,7 @@ if __name__ == "__main__":
     plist1 = list(par1)
     plist2 = list(par2)
 
+    # count the number of frauds in each of the chosen categories
     for [issuercountry, txvariantcode, issuer_id, amount, currencycode,
                     shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
                      accountcode, mail_id, ip_id, card_id, label, creationdate] in data:
@@ -127,15 +91,93 @@ if __name__ == "__main__":
             j = plist2.index(currencycode)
             heat_map[i][j] = heat_map[i][j] + 1
 
-
-    print(heat_map.sum())
+    plt.figure(1)
     sns.heatmap(heat_map, xticklabels=plist2, yticklabels=plist1)
+
+    # Create a scatterplot of the average transaction and the deviation per transaction
+    data2 = sorted(data, key=itemgetter(9))
+    dictionary = {}
+    maxelements = 0
+
+    for [issuercountry, txvariantcode, issuer_id, amount, currencycode,
+         shoppercountry, interaction, verification, cvcresponse, creationdate_stamp,
+         accountcode, mail_id, ip_id, card_id, label, creationdate] in data2:
+
+        if str(card_id) not in dictionary:
+           newArray = []
+           templist = []
+
+           templist.append(amount)
+           templist.append(currencycode)
+           templist.append(label)
+
+           newArray.append(templist)
+
+           dictionary.update({str(card_id): newArray})
+        else:
+            templist = []
+            array = dictionary.get(str(card_id))
+
+            templist.append(amount)
+            templist.append(currencycode)
+            templist.append(label)
+
+            array.append(templist)
+            dictionary.update({str(card_id): array})
+
+    Xgood = []
+    Xbad = []
+    Ygood = []
+    Ybad = []
+
+    # print("at the scatter")
+    count = 0
+
+    for key in dictionary:
+        list = dictionary[key]
+
+        el = len(list)
+        if len(list) < 2:
+            continue
+
+        conversion_dict = {'SEK': 0.09703, 'MXN': 0.04358, 'AUD': 0.63161, 'NZD': 0.58377, 'GBP': 1.13355}
+        total = 0
+        for x in list:
+            Rate = conversion_dict[x[1]]
+
+            total += total + x[0] * Rate
+
+        for x in list:
+            if x[2] is 1:
+
+                Rate = conversion_dict[x[1]]
+
+                avg = (total - x[0] * Rate) / 100
+                avg = avg / (el - 1)
+                Xbad.append(avg)
+                Ybad.append((x[0] * Rate) / 100)
+                count += 1
+            else:
+                Rate = conversion_dict[x[1]]
+
+                avg = (total - x[0] * Rate) / 100
+                avg = avg / (el - 1)
+
+                if avg < 15000:
+                    Xgood.append(avg)
+                    Ygood.append((x[0] * Rate) / 100)
+
+    plt.figure(2)
+    plt.scatter(Xgood, Ygood, c='blue', label='non-fraudulent transactions')
+    plt.scatter(Xbad, Ybad, c='red', label='fraudulent transactions')
+
+    plt.title("Comparison transactions deviating from the average amount")
+    plt.xlabel("Average transaction amount - transaction t")
+    plt.ylabel("transaction t")
+    plt.legend()
+
     plt.show()
-
-
-
-
-
+    print(count)
 
 
 
