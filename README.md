@@ -8,7 +8,7 @@ Steps for executing code with .tar.xz
   
   `Optionally - Run blackbox.py`
 
-  'Optionally - Run whitebox.py'
+  `Optionally - Run whitebox.py`
 
 Steps for executing code without .tar.xz
 --
@@ -26,4 +26,4 @@ Steps for executing code without .tar.xz
 
   `Optionally - Run blackbox.py`
 
-  'Optionally - Run whitebox.py'
+  `Optionally - Run whitebox.py`
